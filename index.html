@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Character Creation</title>
+
+    <style>
+        body {
+            display: grid;
+            place-items: center;
+            gap: 20px;
+        }
+
+        #character-creation-form {
+            display: flex;
+            flex-direction: column;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            gap: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h3>Character Creation</h3>
+        <form id="character-creation-form">
+            <div>
+                <label>Enter your name:</label>
+                <input id="character-name" name="character-name" type="text"></input>
+            </div>
+            <div>
+                <label>Choose your class:</label>
+                <select id="character-class" name="character-class">
+                    <option value="warrior">Warrior</option>
+                    <option value="mage">Mage</option>
+                    <option value="rogue">Rogue</option>
+                </select>
+            </div>
+            <div>
+                <label>Appearance Color:</label>
+                <input id="appearance-color" name="appearance-color" type="color" value="#0000ff">
+            </div>
+            <div>
+                <button type="submit">Create Character</button>
+            </div>
+        </form>
+    </div>
+
+    <script type="module" src="dist/main.js"></script>
+</body>
+</html>
