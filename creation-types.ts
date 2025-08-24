@@ -1,31 +1,3 @@
-export class Character {
-    private attributes: CharacterAttributes;
-    private color: string = 'blue';
-
-    constructor(
-        private name: string,
-        private characterClass: CharacterClass,
-        color?: string    
-    ) {
-        this.attributes = characterClass.getStartingAttributes();
-        if (color) {
-            this.color = color;
-        }
-    }
-
-    public getName() {
-        return this.name;
-    }
-
-    public getAttributes() {
-        return this.attributes;
-    }
-
-    public getColor() {
-        return this.color;
-    }
-}
-
 export enum CharacterClassType {
     Warrior,
     Mage,
@@ -42,29 +14,52 @@ export class CharacterAttributes {
     ) {}
 }
 
-export class CharacterClass {
-    private startingAttributes: CharacterAttributes;
-
-    constructor(
-        private classType: CharacterClassType,
-    ) {
-        const attributes = CharacterClass.CLASS_DEFINITIONS[this.classType];
-        if (!attributes) {
-            throw new Error(`No starting attributes defined for class type: ${this.classType}`);
-        }
-        this.startingAttributes = attributes;
-    }   
-
+export class Character {
     private static readonly CLASS_DEFINITIONS = {
         [CharacterClassType.Warrior]: new CharacterAttributes(12, 10, 3, 5, 3),
         [CharacterClassType.Mage]: new CharacterAttributes(5, 5, 15, 5, 1),
         [CharacterClassType.Rogue]: new CharacterAttributes(7, 5, 3, 15, 2),
     };
 
-    public getClassType(): CharacterClassType {
+    private attributes: CharacterAttributes;
+    private color: string = 'blue';
+    private classType: CharacterClassType;
+
+    constructor (private name: string, className: string, color?: string) {
+        this.classType = this.getClassTypeFromString(className);
+        this.attributes = Character.CLASS_DEFINITIONS[this.classType];
+        if (color) {
+            this.color = color;
+        }
+    }
+
+    getName() {
+        return this.name;
+    }
+
+    getAttributes() {
+        return this.attributes;
+    }
+
+    getColor() {
+        return this.color;
+    }
+
+    getClassType() {
         return this.classType;
     }
-    public getStartingAttributes(): CharacterAttributes {
-        return this.startingAttributes;
+
+    getClassName(): string {
+        return CharacterClassType[this.classType];
+    }
+
+    private getClassTypeFromString(name: string): CharacterClassType {
+        switch (name) {
+            case "warrior": return CharacterClassType.Warrior;
+            case "mage": return CharacterClassType.Mage;
+            case "rogue": return CharacterClassType.Rogue;
+            default:
+                throw new Error(`Unknown character class: ${name}`);
+        }
     }
 }

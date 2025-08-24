@@ -1,10 +1,9 @@
-import { Character, CharacterAttributes, CharacterClass, CharacterClassType } from "./creation-types.js";
+import { Character, CharacterAttributes, CharacterClassType } from "./creation-types.js";
 
 const characterCreationForm = document.getElementById("character-creation-form") as HTMLFormElement;
 const nameInput = document.getElementById("character-name") as HTMLInputElement;
 const playerClassInput = document.getElementById("character-class") as HTMLSelectElement;
 const appearanceColorInput = document.getElementById("appearance-color") as HTMLInputElement;
-let player: Character;
 
 if (!characterCreationForm || !nameInput || !playerClassInput || !appearanceColorInput) {
     throw new Error("Couldn't find required elements!");
@@ -21,21 +20,43 @@ characterCreationForm.addEventListener('submit', (event: SubmitEvent) => {
         return;
     }
 
-    const playerClass: CharacterClass = getCharacterClassByName(playerClassInput.value);
-
-    player = new Character(name, playerClass, appearanceColorInput.value);
-    console.log(`Name: ${player.getName()} Attributes: ${player.getAttributes()} Color: ${player.getColor()}`);
+    const player = new Character(name, playerClassInput.value, appearanceColorInput.value);
+    displayCharacterPreview(player);
 });
 
-function getCharacterClassByName(className: string): CharacterClass {
-    switch (className) {
-        case "warrior":
-            return new CharacterClass(CharacterClassType.Warrior);
-        case "mage":
-            return new CharacterClass(CharacterClassType.Mage);
-        case "rogue":
-            return new CharacterClass(CharacterClassType.Rogue);
-        default:
-            throw new Error("Invalid class type!");
+appearanceColorInput.addEventListener('change', (event: Event) => {
+    updateElementStyle("color-display", "backgroundColor", appearanceColorInput.value);
+});
+
+playerClassInput.addEventListener('change', (event: Event) => {
+});
+
+function displayCharacterPreview(character: Character) {
+    
+    const characterAttributes: CharacterAttributes = character.getAttributes();
+
+    updateElementStyle("character-preview", "display", "block");
+    updateElementStyle("color-display", "backgroundColor", character.getColor());
+    updateElementText("preview-name", character.getName());
+    updateElementText("preview-class", character.getClassName());
+    updateElementText("stat-constitution", characterAttributes.constitution.toString());
+    updateElementText("stat-strength", characterAttributes.strength.toString());
+    updateElementText("stat-mind", characterAttributes.mind.toString());
+    updateElementText("stat-agility", characterAttributes.agility.toString());
+    updateElementText("stat-defense", characterAttributes.defense.toString());
+}
+
+function updateElementText(id: string, text: string) {
+    const element = document.getElementById(id);
+    if (!element) {
+        throw new Error(`${id} was not found.`);
     }
+
+    element.textContent = text;
+}
+
+function updateElementStyle(id: string, property: string, value: string) {
+    const element = document.getElementById(id) as HTMLElement;
+    if (!element) throw new Error(`Element ${id} not found`);
+    (element.style as any)[property] = value;
 }

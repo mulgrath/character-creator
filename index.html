@@ -10,12 +10,24 @@
             gap: 20px;
         }
 
-        #character-creation-form {
+        #character-creation-form{
             display: flex;
             flex-direction: column;
             margin-top: 20px;
             margin-bottom: 20px;
             gap: 20px;
+            width: 300px;
+        }
+
+        #character-preview {
+            display: none;
+            width: 300px;
+        }
+
+        #color-display {
+            width: 50px;
+            height: 50px;
+            border: 1px solid black;
         }
     </style>
 </head>
@@ -43,6 +55,26 @@
                 <button type="submit">Create Character</button>
             </div>
         </form>
+    </div>
+    <div id="character-preview">
+        <h3>Your Character</h3>
+        <div id="character-info">
+            <p>Name: <span id="preview-name"></span></p>
+            <p>Class: <span id="preview-class"></span></p>
+        </div>
+
+        <div id="appearance-preview">
+            <p>Appearance:</p>
+            <div id="color-display"></div>
+        </div>
+
+        <table id="stats-table">
+            <tr><td>Constitution:</td><td id="stat-constitution"></td></tr>
+            <tr><td>Strength:</td><td id="stat-strength"></td></tr>
+            <tr><td>Mind:</td><td id="stat-mind"></td></tr>
+            <tr><td>Agility:</td><td id="stat-agility"></td></tr>
+            <tr><td>Defense:</td><td id="stat-defense"></td></tr>
+        </table>
     </div>
 
     <script type="module" src="dist/main.js"></script>

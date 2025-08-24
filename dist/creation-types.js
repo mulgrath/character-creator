@@ -1,9 +1,24 @@
+export var CharacterClassType;
+(function (CharacterClassType) {
+    CharacterClassType[CharacterClassType["Warrior"] = 0] = "Warrior";
+    CharacterClassType[CharacterClassType["Mage"] = 1] = "Mage";
+    CharacterClassType[CharacterClassType["Rogue"] = 2] = "Rogue";
+})(CharacterClassType || (CharacterClassType = {}));
+export class CharacterAttributes {
+    constructor(constitution, strength, mind, agility, defense) {
+        this.constitution = constitution;
+        this.strength = strength;
+        this.mind = mind;
+        this.agility = agility;
+        this.defense = defense;
+    }
+}
 export class Character {
-    constructor(name, characterClass, color) {
+    constructor(name, className, color) {
         this.name = name;
-        this.characterClass = characterClass;
         this.color = 'blue';
-        this.attributes = characterClass.getStartingAttributes();
+        this.classType = this.getClassTypeFromString(className);
+        this.attributes = Character.CLASS_DEFINITIONS[this.classType];
         if (color) {
             this.color = color;
         }
@@ -17,36 +32,24 @@ export class Character {
     getColor() {
         return this.color;
     }
-}
-export var CharacterClassType;
-(function (CharacterClassType) {
-    CharacterClassType[CharacterClassType["Warrior"] = 0] = "Warrior";
-    CharacterClassType[CharacterClassType["Mage"] = 1] = "Mage";
-    CharacterClassType[CharacterClassType["Rogue"] = 2] = "Rogue";
-})(CharacterClassType || (CharacterClassType = {}));
-export class CharacterClass {
-    constructor(classType) {
-        this.classType = classType;
-        this.CLASS_DEFINITIONS = {
-            [CharacterClassType.Warrior]: new CharacterAttributes(12, 10, 3, 5, 3),
-            [CharacterClassType.Mage]: new CharacterAttributes(5, 5, 15, 5, 1),
-            [CharacterClassType.Rogue]: new CharacterAttributes(7, 5, 3, 15, 2),
-        };
-        this.startingAttributes = this.CLASS_DEFINITIONS[this.classType];
-    }
     getClassType() {
         return this.classType;
     }
-    getStartingAttributes() {
-        return this.startingAttributes;
+    getClassName() {
+        return CharacterClassType[this.classType];
+    }
+    getClassTypeFromString(name) {
+        switch (name) {
+            case "warrior": return CharacterClassType.Warrior;
+            case "mage": return CharacterClassType.Mage;
+            case "rogue": return CharacterClassType.Rogue;
+            default:
+                throw new Error(`Unknown character class: ${name}`);
+        }
     }
 }
-export class CharacterAttributes {
-    constructor(constitution, strength, mind, agility, defense) {
-        this.constitution = constitution;
-        this.strength = strength;
-        this.mind = mind;
-        this.agility = agility;
-        this.defense = defense;
-    }
-}
+Character.CLASS_DEFINITIONS = {
+    [CharacterClassType.Warrior]: new CharacterAttributes(12, 10, 3, 5, 3),
+    [CharacterClassType.Mage]: new CharacterAttributes(5, 5, 15, 5, 1),
+    [CharacterClassType.Rogue]: new CharacterAttributes(7, 5, 3, 15, 2),
+};
