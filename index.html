@@ -20,61 +20,180 @@
         }
 
         #character-preview {
-            display: none;
             width: 300px;
         }
 
-        #color-display {
-            width: 50px;
-            height: 50px;
+        .color-display {
+            width: 60px;
+            height: 60px;
             border: 1px solid black;
+        }
+
+        input.valid {
+            border: 2px solid green;
+            background-color: #f0fff0;
+        }
+
+        input.invalid {
+            border: 2px solid red;
+            background-color: #fff0f0;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        #preview-class-description {
+            font-style: italic;
+        }
+
+        .character-slot {
+            display: grid;
+            grid-template-columns: 80px 1fr 120px; /* Portrait | Flexible name area | Fixed meta area */
+            grid-template-rows: 1fr 1fr; /* Two rows of equal height */
+            padding: 15px;
+            border: 2px solid #ccc;
+            cursor: pointer;
+            min-width: 400px;
+            margin-bottom: 20px;
+        }
+
+        .character-portrait {
+            grid-row: 1 / 3; /* Span both rows */
+            grid-column: 1;
+        }
+
+        .character-meta {
+            grid-row: 1 / 3;
+            grid-column: 3;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            justify-content: space-between; /* Spread date and button vertically */
+        }
+
+        .character-info {
+            grid-row: 1 / 3;
+            grid-column: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: space-between; /* Spread date and button vertically */
+        }
+
+        .delete-button {
+            width: 60px;
+            height: 30px;
+            font-size: 12px;
         }
     </style>
 </head>
 <body>
-    <div>
-        <h3>Character Creation</h3>
-        <form id="character-creation-form">
-            <div>
-                <label>Enter your name:</label>
-                <input id="character-name" name="character-name" type="text"></input>
+    <div id="character-select-screen">
+        <h3>Select Character</h3>
+        <div class="character-slot" data-slot-index="0">
+            <div class="character-portrait">
+                <div class="color-display" style="background-color: #5e462b;"></div>
             </div>
-            <div>
-                <label>Choose your class:</label>
-                <select id="character-class" name="character-class">
-                    <option value="warrior">Warrior</option>
-                    <option value="mage">Mage</option>
-                    <option value="rogue">Rogue</option>
-                </select>
+            <div class="character-info">
+                <div class="character-name">Aragorn</div>
+                <div class="character-class">Warrior</div>
             </div>
-            <div>
-                <label>Appearance Color:</label>
-                <input id="appearance-color" name="appearance-color" type="color" value="#0000ff">
+            <div class="character-meta">
+                <div class="creation-date">08/24/2025</div>
+                <button class="delete-btn">Delete</button>
             </div>
-            <div>
-                <button type="submit">Create Character</button>
+        </div>
+        <div class="character-slot" data-slot-index="1">
+            <div class="character-portrait">
+                <div class="color-display" style="background-color: #0d7200;"></div>
             </div>
-        </form>
+            <div class="character-info">
+                <div class="character-name">Legolas</div>
+                <div class="character-class">Rogue</div>
+            </div>
+            <div class="character-meta">
+                <div class="creation-date">08/23/2025</div>
+                <button class="delete-btn">Delete</button>
+            </div>
+        </div>
+        <div class="character-slot" data-slot-index="2">
+            <div class="character-portrait">
+                <div class="color-display" style="background-color: #ff7b00;"></div>
+            </div>
+            <div class="character-info">
+                <div class="character-name">Gimli</div>
+                <div class="character-class">Warrior</div>
+            </div>
+            <div class="character-meta">
+                <div class="creation-date">08/10/2025</div>
+                <button class="delete-btn">Delete</button>
+            </div>
+        </div>
+        <div class="character-slot" data-slot-index="3">
+            <div class="character-portrait">
+                <div class="color-display" style="background-color: #888888;"></div>
+            </div>
+            <div class="character-info">
+                <div class="character-name">Gandalf</div>
+                <div class="character-class">Mage</div>
+            </div>
+            <div class="character-meta">
+                <div class="creation-date">01/01/2001</div>
+                <button class="delete-btn">Delete</button>
+            </div>
+        </div>
     </div>
-    <div id="character-preview">
-        <h3>Your Character</h3>
-        <div id="character-info">
-            <p>Name: <span id="preview-name"></span></p>
-            <p>Class: <span id="preview-class"></span></p>
-        </div>
 
-        <div id="appearance-preview">
-            <p>Appearance:</p>
-            <div id="color-display"></div>
+    <div id="character-creator-screen" style="display: none;">
+        <div>
+            <h3>Character Creation</h3>
+            <form id="character-creation-form">
+                <div>
+                    <label>Enter your name:</label>
+                    <input id="character-name" name="character-name" type="text"></input>
+                    <div id="name-error" class="error-message">Name must be 1-14 letters, spaces, or underscores.</div>
+                </div>
+                <div>
+                    <label>Choose your class:</label>
+                    <select id="character-class" name="character-class">
+                        <option value="warrior">Warrior</option>
+                        <option value="mage">Mage</option>
+                        <option value="rogue">Rogue</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Appearance Color:</label>
+                    <input id="appearance-color" name="appearance-color" type="color" value="#0000ff">
+                </div>
+                <div>
+                    <button type="submit">Create Character</button>
+                </div>
+            </form>
         </div>
-
-        <table id="stats-table">
-            <tr><td>Constitution:</td><td id="stat-constitution"></td></tr>
-            <tr><td>Strength:</td><td id="stat-strength"></td></tr>
-            <tr><td>Mind:</td><td id="stat-mind"></td></tr>
-            <tr><td>Agility:</td><td id="stat-agility"></td></tr>
-            <tr><td>Defense:</td><td id="stat-defense"></td></tr>
-        </table>
+        <div id="character-preview">
+            <h3>Your Character</h3>
+            <div id="character-info">
+                <p>Class: <span id="preview-class"></span></p>
+                <p><span id="preview-class-description"></span></p>
+            </div>
+    
+            <div id="appearance-preview">
+                <p>Appearance:</p>
+                <div class="color-display"></div>
+            </div>
+    
+            <table id="stats-table">
+                <tr><td>Constitution:</td><td id="stat-constitution"></td></tr>
+                <tr><td>Strength:</td><td id="stat-strength"></td></tr>
+                <tr><td>Mind:</td><td id="stat-mind"></td></tr>
+                <tr><td>Agility:</td><td id="stat-agility"></td></tr>
+                <tr><td>Defense:</td><td id="stat-defense"></td></tr>
+            </table>
+        </div>
     </div>
 
     <script type="module" src="dist/main.js"></script>

@@ -13,12 +13,22 @@ export class CharacterAttributes {
         this.defense = defense;
     }
 }
+const CLASS_DEFINITIONS = {
+    [CharacterClassType.Warrior]: new CharacterAttributes(12, 10, 3, 5, 3),
+    [CharacterClassType.Mage]: new CharacterAttributes(5, 5, 15, 5, 1),
+    [CharacterClassType.Rogue]: new CharacterAttributes(7, 5, 3, 15, 2),
+};
+const CLASS_DESCRIPTIONS = {
+    [CharacterClassType.Warrior]: "Both sturdy and strong, the Warrior excels at shrugging off attacks while dealing moderate damage with their weapon.",
+    [CharacterClassType.Mage]: "While fragile, the powerful Mage excels in magical attacks that can lay low any that dare to approach.",
+    [CharacterClassType.Rogue]: "The nimble Rogue excels in avoiding attacks and striking faster than foes can respond."
+};
 export class Character {
     constructor(name, className, color) {
         this.name = name;
         this.color = 'blue';
         this.classType = this.getClassTypeFromString(className);
-        this.attributes = Character.CLASS_DEFINITIONS[this.classType];
+        this.attributes = CLASS_DEFINITIONS[this.classType];
         if (color) {
             this.color = color;
         }
@@ -38,8 +48,11 @@ export class Character {
     getClassName() {
         return CharacterClassType[this.classType];
     }
+    getClassDescription() {
+        return CLASS_DESCRIPTIONS[this.classType];
+    }
     getClassTypeFromString(name) {
-        switch (name) {
+        switch (name.toLowerCase()) {
             case "warrior": return CharacterClassType.Warrior;
             case "mage": return CharacterClassType.Mage;
             case "rogue": return CharacterClassType.Rogue;
@@ -48,8 +61,3 @@ export class Character {
         }
     }
 }
-Character.CLASS_DEFINITIONS = {
-    [CharacterClassType.Warrior]: new CharacterAttributes(12, 10, 3, 5, 3),
-    [CharacterClassType.Mage]: new CharacterAttributes(5, 5, 15, 5, 1),
-    [CharacterClassType.Rogue]: new CharacterAttributes(7, 5, 3, 15, 2),
-};
