@@ -88,18 +88,16 @@ function updateSlotDisplay(slotIndex: number, character: Character | null) {
 
 function createFilledSlotHTML(slotIndex: number, character: Character): string {
     return `
-        <div class="character-slot" data-slot-index="${slotIndex}">
-            <div class="character-portrait">
-                <div class="color-display" style="background-color: ${character.getColor()};"></div>
-            </div>
-            <div class="character-info">
-                <div class="character-name">${character.getName()}</div>
-                <div class="character-class">${character.getClassName()}</div>
-            </div>
-            <div class="character-meta">
-                <div class="creation-date">08/24/2025</div>
-                <button class="delete-btn">Delete</button>
-            </div>
+        <div class="character-portrait">
+            <div class="color-display" style="background-color: ${character.getColor()};"></div>
+        </div>
+        <div class="character-info">
+            <div class="character-name">${character.getName()}</div>
+            <div class="character-class">${character.getClassName()}</div>
+        </div>
+        <div class="character-meta">
+            <div class="creation-date">08/24/2025</div>
+            <button class="delete-btn">Delete</button>
         </div>
     `;
 }
@@ -117,6 +115,7 @@ function toggleCreationScreen() {
         currentState = AppState.CharacterSelect;
         updateElementStyle("character-creator-screen", "display", "none");
         updateElementStyle("character-select-screen", "display", "block");
+        loadSavedCharacters();
     } else if (currentState === AppState.CharacterSelect) {
         currentState = AppState.CharacterCreator;
         updateElementStyle("character-creator-screen", "display", "block");
@@ -128,7 +127,14 @@ function handleSlotClick(event: Event) {
     const slotIndex = parseInt((event.currentTarget as HTMLElement).getAttribute('data-slot-index')!);
     
     if ((event.target as HTMLElement).classList.contains('delete-btn')) {
-        console.log(`Delete slot ${slotIndex}`);
+        const character = Character.loadFromLocalStorage(slotIndex);
+        if (character) {
+            const confirmDelete = confirm(`Are you sure you want to delete ${character.getName()}?`);
+            if (confirmDelete) {
+                deleteCharacter(slotIndex);
+                updateSlotDisplay(slotIndex, null);
+            }
+        }
         return;
     }
 
@@ -139,6 +145,10 @@ function handleSlotClick(event: Event) {
     } else {
         toggleCreationScreen();
     }
+}
+
+function deleteCharacter(slotIndex: number) {
+    localStorage.removeItem(`character_${slotIndex}`);
 }
 
 function verifyCharacterName(name: string): boolean {
