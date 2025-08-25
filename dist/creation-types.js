@@ -51,6 +51,21 @@ export class Character {
     getClassDescription() {
         return CLASS_DESCRIPTIONS[this.classType];
     }
+    saveToLocalStorage(slotIndex) {
+        const saveData = {
+            name: this.name,
+            className: this.getClassName().toLowerCase(),
+            color: this.color
+        };
+        localStorage.setItem(`character_${slotIndex}`, JSON.stringify(saveData));
+    }
+    static loadFromLocalStorage(slotIndex) {
+        const saveData = localStorage.getItem(`character_${slotIndex}`);
+        if (!saveData)
+            return null;
+        const data = JSON.parse(saveData);
+        return new Character(data.name, data.className, data.color);
+    }
     getClassTypeFromString(name) {
         switch (name.toLowerCase()) {
             case "warrior": return CharacterClassType.Warrior;
