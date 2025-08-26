@@ -63,42 +63,6 @@ export class Character {
         return CLASS_DESCRIPTIONS[this.classType];
     }
 
-    public saveToLocalStorage(slotIndex: number): void {
-        const saveData = {
-            name: this.name,
-            className: this.getClassName().toLowerCase(),
-            color: this.color
-        };
-        localStorage.setItem(`character_${slotIndex}`, JSON.stringify(saveData));
-    }
-
-    public static loadFromLocalStorage(slotIndex: number): Character | null {
-        const saveData = localStorage.getItem(`character_${slotIndex}`);
-        if (!saveData) return null;
-
-        const data = JSON.parse(saveData);
-        return new Character(data.name, data.className, data.color);
-    }
-
-    public exportToJSON(): string {
-        const exportData = {
-            name: this.name,
-            className: this.getClassName().toLowerCase(),
-            color: this.color,
-            exportDate: new Date().toISOString()
-        };
-        return JSON.stringify(exportData, null, 2);
-    }
-
-    public static importFromJSON(jsonString: string): Character | null {
-        try {
-            const characterData = JSON.parse(jsonString);
-            return new Character(characterData.name, characterData.className, characterData.color);
-        } catch (error) {
-            return null;
-        }
-    }
-
     private getClassTypeFromString(name: string): CharacterClassType {
         switch (name.toLowerCase()) {
             case "warrior": return CharacterClassType.Warrior;

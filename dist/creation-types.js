@@ -51,39 +51,6 @@ export class Character {
     getClassDescription() {
         return CLASS_DESCRIPTIONS[this.classType];
     }
-    saveToLocalStorage(slotIndex) {
-        const saveData = {
-            name: this.name,
-            className: this.getClassName().toLowerCase(),
-            color: this.color
-        };
-        localStorage.setItem(`character_${slotIndex}`, JSON.stringify(saveData));
-    }
-    static loadFromLocalStorage(slotIndex) {
-        const saveData = localStorage.getItem(`character_${slotIndex}`);
-        if (!saveData)
-            return null;
-        const data = JSON.parse(saveData);
-        return new Character(data.name, data.className, data.color);
-    }
-    exportToJSON() {
-        const exportData = {
-            name: this.name,
-            className: this.getClassName().toLowerCase(),
-            color: this.color,
-            exportDate: new Date().toISOString()
-        };
-        return JSON.stringify(exportData, null, 2);
-    }
-    static importFromJSON(jsonString) {
-        try {
-            const characterData = JSON.parse(jsonString);
-            return new Character(characterData.name, characterData.className, characterData.color);
-        }
-        catch (error) {
-            return null;
-        }
-    }
     getClassTypeFromString(name) {
         switch (name.toLowerCase()) {
             case "warrior": return CharacterClassType.Warrior;

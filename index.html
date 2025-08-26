@@ -107,58 +107,20 @@
             height: 30px;
             font-size: 12px;
         }
+
+        #character-slots-container {
+            max-height: 440px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
     <div id="character-select-screen">
         <h3>Select Character</h3>
-        <div class="character-slot" data-slot-index="0">
-            <div class="character-portrait">
-                <div class="color-display" style="background-color: #5e462b;"></div>
-            </div>
-            <div class="character-info">
-                <div class="character-name">Aragorn</div>
-                <div class="character-class">Warrior</div>
-            </div>
-            <div class="character-meta">
-                <div class="creation-date">08/24/2025</div>
-            </div>
-        </div>
-        <div class="character-slot" data-slot-index="1">
-            <div class="character-portrait">
-                <div class="color-display" style="background-color: #0d7200;"></div>
-            </div>
-            <div class="character-info">
-                <div class="character-name">Legolas</div>
-                <div class="character-class">Rogue</div>
-            </div>
-            <div class="character-meta">
-                <div class="creation-date">08/23/2025</div>
-            </div>
-        </div>
-        <div class="character-slot" data-slot-index="2">
-            <div class="character-portrait">
-                <div class="color-display" style="background-color: #ff7b00;"></div>
-            </div>
-            <div class="character-info">
-                <div class="character-name">Gimli</div>
-                <div class="character-class">Warrior</div>
-            </div>
-            <div class="character-meta">
-                <div class="creation-date">08/10/2025</div>
-            </div>
-        </div>
-        <div class="character-slot" data-slot-index="3">
-            <div class="character-portrait">
-                <div class="color-display" style="background-color: #888888;"></div>
-            </div>
-            <div class="character-info">
-                <div class="character-name">Gandalf</div>
-                <div class="character-class">Mage</div>
-            </div>
-            <div class="character-meta">
-                <div class="creation-date">01/01/2001</div>
-            </div>
+        <div id="character-slots-container">
         </div>
         <div class="action-buttons">
             <button id="delete-mode-btn">Delete Character</button>
