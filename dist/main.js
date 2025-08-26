@@ -1,6 +1,6 @@
-import { createCharacterSlots, updateSlotDisplay, loadSavedCharacters, setSelectedSlot } from "./slot-manager.js";
-import { exportCharacterToJSON, importCharacterFromJSON, saveCharacterToLocalStorage, loadCharacterFromLocalStorage } from "./character-storage.js";
-import { AppState, switchToMode, currentState } from "./ui-state-manager.js";
+import { createCharacterSlots, loadSavedCharacters, setSelectedSlot } from "./slot-manager.js";
+import { loadCharacterFromLocalStorage, handleDeleteCharacter, handleExportCharacter, handleImportCharacter } from "./character-storage.js";
+import { AppState, switchToMode, currentState, toggleCreationScreen } from "./ui-state-manager.js";
 import { displayCharacterPreview } from "./character-creator.js";
 const characterCreatorBackButton = document.getElementById("character-creator-back-button");
 /// Character Selection ///
@@ -34,14 +34,6 @@ importModeBtn.addEventListener('click', (event) => {
 modeBackBtn.addEventListener('click', (event) => {
     switchToMode(AppState.CharacterSelect);
 });
-function toggleCreationScreen() {
-    if (currentState === AppState.CharacterCreator) {
-        switchToMode(AppState.CharacterSelect);
-    }
-    else if (currentState === AppState.CharacterSelect) {
-        switchToMode(AppState.CharacterCreator);
-    }
-}
 function handleSlotClick(event) {
     const slotIndex = parseInt(event.currentTarget.getAttribute('data-slot-index'));
     setSelectedSlot(slotIndex);
@@ -67,55 +59,4 @@ function handleSelectCharacter(slotIndex) {
     else {
         toggleCreationScreen();
     }
-}
-function handleDeleteCharacter(slotIndex) {
-    const character = loadCharacterFromLocalStorage(slotIndex);
-    if (character) {
-        const confirmDelete = confirm(`Are you sure you want to delete ${character.getName()}?`);
-        if (confirmDelete) {
-            deleteCharacter(slotIndex);
-        }
-    }
-}
-function deleteCharacter(slotIndex) {
-    localStorage.removeItem(`character_${slotIndex}`);
-    updateSlotDisplay(slotIndex, null);
-}
-function handleExportCharacter(slotIndex) {
-    const selectedCharacter = loadCharacterFromLocalStorage(slotIndex);
-    if (selectedCharacter) {
-        const jsonString = exportCharacterToJSON(selectedCharacter);
-        downloadJSON(jsonString, `${selectedCharacter.getName()}.json`);
-    }
-}
-function downloadJSON(jsonString, filename) {
-    const blob = new Blob([jsonString], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    a.click();
-    URL.revokeObjectURL(url);
-}
-function handleImportCharacter(slotIndex) {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.json';
-    input.onchange = (event) => {
-        const file = event.target.files?.[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const jsonString = e.target?.result;
-                const character = importCharacterFromJSON(jsonString);
-                if (character) {
-                    saveCharacterToLocalStorage(character, slotIndex);
-                    updateSlotDisplay(slotIndex, character);
-                    switchToMode(AppState.CharacterSelect);
-                }
-            };
-            reader.readAsText(file);
-        }
-    };
-    input.click();
 }

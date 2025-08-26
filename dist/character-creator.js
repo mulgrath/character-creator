@@ -6,6 +6,7 @@ const characterCreationForm = document.getElementById("character-creation-form")
 const nameInput = document.getElementById("character-name");
 const playerClassInput = document.getElementById("character-class");
 const appearanceColorInput = document.getElementById("appearance-color");
+let previewCharacter = new Character("", playerClassInput.value, appearanceColorInput.value);
 if (!characterCreationForm || !nameInput || !playerClassInput || !appearanceColorInput) {
     throw new Error("Couldn't find required elements!");
 }
@@ -18,7 +19,6 @@ export function displayCharacterPreview() {
 function verifyCharacterName(name) {
     return name.length > 0 && name.length < 15 && /^[a-zA-Z_ ]+$/.test(name);
 }
-let previewCharacter = new Character("", playerClassInput.value, appearanceColorInput.value);
 function handleCharacterCreation() {
     const name = nameInput.value.trim();
     if (!verifyCharacterName(name)) {

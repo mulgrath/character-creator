@@ -1,6 +1,12 @@
 import { loadCharacterFromLocalStorage } from "./character-storage.js";
 export const SLOT_COUNT = 6;
 let selectedSlot = null;
+export function setSelectedSlot(slotIndex) {
+    selectedSlot = slotIndex;
+}
+export function getSelectedSlot() {
+    return selectedSlot;
+}
 export function updateSlotDisplay(slotIndex, character) {
     const slot = document.querySelector(`[data-slot-index="${slotIndex}"]`);
     if (character) {
@@ -40,12 +46,6 @@ function createFilledSlotHTML(character) {
             <div class="creation-date">${new Date().toDateString()}</div>
         </div>
     `;
-}
-export function setSelectedSlot(slotIndex) {
-    selectedSlot = slotIndex;
-}
-export function getSelectedSlot() {
-    return selectedSlot;
 }
 function createEmptySlotHTML() {
     return `

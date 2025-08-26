@@ -44,3 +44,11 @@ export function switchToMode(newState: AppState) {
             throw new Error("Invalid state.");
     }
 }
+
+export function toggleCreationScreen() {
+    if (currentState === AppState.CharacterCreator) {
+        switchToMode(AppState.CharacterSelect);
+    } else if (currentState === AppState.CharacterSelect) {
+        switchToMode(AppState.CharacterCreator);
+    }
+}
