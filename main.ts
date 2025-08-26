@@ -2,21 +2,32 @@ import { Character, CharacterAttributes } from "./creation-types.js";
 
 enum AppState {
     CharacterSelect,
-    CharacterCreator
+    CharacterCreator,
+    DeleteMode,
+    ExportMode,
+    ImportMode,
 }
 
 let currentState = AppState.CharacterSelect;
 
+/// Character Creation ///
 const characterCreationForm = document.getElementById("character-creation-form") as HTMLFormElement;
 const nameInput = document.getElementById("character-name") as HTMLInputElement;
 const playerClassInput = document.getElementById("character-class") as HTMLSelectElement;
 const appearanceColorInput = document.getElementById("appearance-color") as HTMLInputElement;
-const characterSlots: NodeListOf<Element> = document.querySelectorAll(".character-slot");
 const characterCreatorBackButton = document.getElementById("character-creator-back-button") as HTMLButtonElement;
+
+/// Character Selection ///
+const characterSlots: NodeListOf<Element> = document.querySelectorAll(".character-slot");
+const deleteModeBtn = document.getElementById('delete-mode-btn') as HTMLButtonElement;
+const exportModeBtn = document.getElementById('export-mode-btn') as HTMLButtonElement;
+const importModeBtn = document.getElementById('import-mode-btn') as HTMLButtonElement;
+const modeBackBtn = document.getElementById('mode-back-btn') as HTMLButtonElement;
 
 let selectedSlot: number | null = null;
 
-if (!characterCreationForm || !nameInput || !playerClassInput || !appearanceColorInput) {
+if (!characterCreationForm || !nameInput || !playerClassInput || !appearanceColorInput || !deleteModeBtn || 
+    !exportModeBtn || !importModeBtn || !modeBackBtn) {
     throw new Error("Couldn't find required elements!");
 }
 
@@ -39,6 +50,38 @@ characterSlots.forEach(slot => {
 characterCreationForm.addEventListener('submit', (event: SubmitEvent) => {
     event.preventDefault();
 
+    handleCharacterCreation();
+});
+
+deleteModeBtn.addEventListener('click', (event: Event) => {
+    switchToMode(AppState.DeleteMode);
+});
+
+exportModeBtn.addEventListener('click', (event: Event) => {
+    switchToMode(AppState.ExportMode);
+});
+
+importModeBtn.addEventListener('click', (event: Event) => {
+    switchToMode(AppState.ImportMode);
+});
+
+modeBackBtn.addEventListener('click', (event: Event) => {
+    switchToMode(AppState.CharacterSelect);
+});
+
+appearanceColorInput.addEventListener('change', (event: Event) => {
+    previewCharacter = new Character(previewCharacter.getName(), previewCharacter.getClassName(), appearanceColorInput.value);
+    updateElementStyle("appearance-color-preview", "backgroundColor", previewCharacter.getColor());
+});
+
+playerClassInput.addEventListener('change', (event: Event) => {
+    previewCharacter = new Character(previewCharacter.getName(), playerClassInput.value, previewCharacter.getColor());
+    updateElementText("preview-class", previewCharacter.getClassName());
+    updateElementText("preview-class-description", previewCharacter.getClassDescription());
+    updateAttributesText(previewCharacter.getAttributes());
+});
+
+function handleCharacterCreation() {
     const name = nameInput.value.trim();
 
     if (!verifyCharacterName(name)) {
@@ -53,19 +96,7 @@ characterCreationForm.addEventListener('submit', (event: SubmitEvent) => {
     if (selectedSlot !== null) {
         player.saveToLocalStorage(selectedSlot);
     }
-});
-
-appearanceColorInput.addEventListener('change', (event: Event) => {
-    previewCharacter = new Character(previewCharacter.getName(), previewCharacter.getClassName(), appearanceColorInput.value);
-    updateElementStyle("appearance-color-preview", "backgroundColor", previewCharacter.getColor());
-});
-
-playerClassInput.addEventListener('change', (event: Event) => {
-    previewCharacter = new Character(previewCharacter.getName(), playerClassInput.value, previewCharacter.getColor());
-    updateElementText("preview-class", previewCharacter.getClassName());
-    updateElementText("preview-class-description", previewCharacter.getClassDescription());
-    updateAttributesText(previewCharacter.getAttributes());
-});
+}
 
 function loadSavedCharacters() {
     for (let slotIndex = 0; slotIndex < characterSlots.length; slotIndex++) {
@@ -96,8 +127,7 @@ function createFilledSlotHTML(slotIndex: number, character: Character): string {
             <div class="character-class">${character.getClassName()}</div>
         </div>
         <div class="character-meta">
-            <div class="creation-date">08/24/2025</div>
-            <button class="delete-btn">Delete</button>
+            <div class="creation-date">${new Date().toDateString()}</div>
         </div>
     `;
 }
@@ -112,43 +142,128 @@ function createEmptySlotHTML(): string {
 
 function toggleCreationScreen() {
     if (currentState === AppState.CharacterCreator) {
-        currentState = AppState.CharacterSelect;
-        updateElementStyle("character-creator-screen", "display", "none");
-        updateElementStyle("character-select-screen", "display", "block");
-        loadSavedCharacters();
+        switchToMode(AppState.CharacterSelect);
     } else if (currentState === AppState.CharacterSelect) {
-        currentState = AppState.CharacterCreator;
-        updateElementStyle("character-creator-screen", "display", "block");
-        updateElementStyle("character-select-screen", "display", "none");
+        switchToMode(AppState.CharacterCreator);
+    }
+}
+
+function switchToMode(newState: AppState) {
+    switch (newState) {
+        case AppState.CharacterCreator:
+            currentState = AppState.CharacterCreator;
+            updateElementStyle("character-creator-screen", "display", "block");
+            updateElementStyle("character-select-screen", "display", "none");
+            break;
+        case AppState.CharacterSelect:
+            currentState = AppState.CharacterSelect;
+            updateElementStyle("character-creator-screen", "display", "none");
+            updateElementStyle("character-select-screen", "display", "block");
+            updateElementStyle('mode-instruction', 'display', 'none');
+            loadSavedCharacters();
+            break;
+        case AppState.DeleteMode:
+            currentState = AppState.DeleteMode;
+            updateElementText('instruction-text', "Select slot to delete");
+            updateElementStyle('mode-instruction', 'display', 'block');
+            break;
+        case AppState.ExportMode:
+            currentState = AppState.ExportMode;
+            updateElementText('instruction-text', "Select slot to export");
+            updateElementStyle('mode-instruction', 'display', 'block');
+            break;
+        case AppState.ImportMode:
+            currentState = AppState.ImportMode;
+            updateElementText('instruction-text', "Select slot for imported character, then select character .json file to import");
+            updateElementStyle('mode-instruction', 'display', 'block');
+            break;
+        default:
+            throw new Error("Invalid state.");
     }
 }
 
 function handleSlotClick(event: Event) {
     const slotIndex = parseInt((event.currentTarget as HTMLElement).getAttribute('data-slot-index')!);
-    
-    if ((event.target as HTMLElement).classList.contains('delete-btn')) {
-        const character = Character.loadFromLocalStorage(slotIndex);
-        if (character) {
-            const confirmDelete = confirm(`Are you sure you want to delete ${character.getName()}?`);
-            if (confirmDelete) {
-                deleteCharacter(slotIndex);
-                updateSlotDisplay(slotIndex, null);
-            }
-        }
-        return;
-    }
-
     selectedSlot = slotIndex;
 
-    if (Character.loadFromLocalStorage(selectedSlot)) {
+    switch (currentState) {
+        case AppState.CharacterSelect:
+            handleSelectCharacter(slotIndex);
+            break;
+        case AppState.DeleteMode:
+            handleDeleteCharacter(slotIndex);
+            break;
+        case AppState.ExportMode:
+            handleExportCharacter(slotIndex);
+            break;
+        case AppState.ImportMode:
+            handleImportCharacter(slotIndex);
+            break;
+    }
+}
+
+function handleSelectCharacter(slotIndex: number) {
+    if (Character.loadFromLocalStorage(slotIndex)) {
         // Load the game using the current character
     } else {
         toggleCreationScreen();
     }
 }
 
+function handleDeleteCharacter(slotIndex: number) {
+    const character = Character.loadFromLocalStorage(slotIndex);
+    if (character) {
+        const confirmDelete = confirm(`Are you sure you want to delete ${character.getName()}?`);
+        if (confirmDelete) {
+            deleteCharacter(slotIndex);
+        }
+    }
+}
+
 function deleteCharacter(slotIndex: number) {
     localStorage.removeItem(`character_${slotIndex}`);
+    updateSlotDisplay(slotIndex, null);
+}
+
+function handleExportCharacter(slotIndex: number) {
+    const selectedCharacter = Character.loadFromLocalStorage(slotIndex);
+    if (selectedCharacter) {
+        const jsonString = selectedCharacter.exportToJSON();
+        downloadJSON(jsonString, `${selectedCharacter.getName()}.json`);
+    }
+}
+
+function downloadJSON(jsonString: string, filename: string) {
+    const blob = new Blob([jsonString], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+function handleImportCharacter(slotIndex: number) {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    input.onchange = (event) => {
+        const file = (event.target as HTMLInputElement).files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const jsonString = e.target?.result as string;
+                const character = Character.importFromJSON(jsonString);
+                if (character) {
+                    character.saveToLocalStorage(slotIndex);
+                    updateSlotDisplay(slotIndex, character);
+                    switchToMode(AppState.CharacterSelect);
+                }
+            };
+            reader.readAsText(file);
+        }
+    };
+    input.click();
 }
 
 function verifyCharacterName(name: string): boolean {
@@ -156,7 +271,6 @@ function verifyCharacterName(name: string): boolean {
 }
 
 function displayCharacterPreview(character: Character) {
-    //updateElementStyle("character-preview", "display", "block");
     updateElementStyle("appearance-color-preview", "backgroundColor", character.getColor());
     updateElementText("preview-class", character.getClassName());
     updateElementText("preview-class-description", previewCharacter.getClassDescription());
