@@ -3,12 +3,11 @@ import { loadCharacterFromLocalStorage, handleDeleteCharacter, handleExportChara
 import { AppState, switchToMode, currentState, toggleCreationScreen } from "./ui-state-manager.js";
 import { displayCharacterPreview } from "./character-creator.js";
 const characterCreatorBackButton = document.getElementById("character-creator-back-button");
-/// Character Selection ///
 const deleteModeBtn = document.getElementById('delete-mode-btn');
 const exportModeBtn = document.getElementById('export-mode-btn');
 const importModeBtn = document.getElementById('import-mode-btn');
 const modeBackBtn = document.getElementById('mode-back-btn');
-if (!deleteModeBtn || !exportModeBtn || !importModeBtn || !modeBackBtn) {
+if (!characterCreatorBackButton || !deleteModeBtn || !exportModeBtn || !importModeBtn || !modeBackBtn) {
     throw new Error("Couldn't find required elements!");
 }
 document.addEventListener('DOMContentLoaded', (event) => {

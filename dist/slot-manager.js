@@ -11,11 +11,11 @@ export function updateSlotDisplay(slotIndex, character) {
     const slot = document.querySelector(`[data-slot-index="${slotIndex}"]`);
     if (character) {
         slot.innerHTML = createFilledSlotHTML(character);
-        slot.className = 'character-slot filled';
+        slot.className = 'character-slot card card-hover filled';
     }
     else {
         slot.innerHTML = createEmptySlotHTML();
-        slot.className = 'character-slot empty';
+        slot.className = 'character-slot card card-hover empty';
     }
 }
 export function loadSavedCharacters() {
@@ -27,7 +27,7 @@ export function loadSavedCharacters() {
 export function createCharacterSlots(containerElement, clickHandler) {
     for (let i = 0; i < SLOT_COUNT; i++) {
         const newSlot = document.createElement('div');
-        newSlot.className = 'character-slot';
+        newSlot.className = 'character-slot card card-hover';
         newSlot.setAttribute('data-slot-index', i.toString());
         newSlot.addEventListener('click', clickHandler);
         containerElement.appendChild(newSlot);

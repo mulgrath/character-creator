@@ -5,9 +5,10 @@ import { getSelectedSlot } from "./slot-manager.js";
 const characterCreationForm = document.getElementById("character-creation-form");
 const nameInput = document.getElementById("character-name");
 const playerClassInput = document.getElementById("character-class");
-const appearanceColorInput = document.getElementById("appearance-color");
-let previewCharacter = new Character("", playerClassInput.value, appearanceColorInput.value);
-if (!characterCreationForm || !nameInput || !playerClassInput || !appearanceColorInput) {
+const colorPreview = document.getElementById('color-preview');
+const hiddenColorInput = document.getElementById('appearance-color');
+let previewCharacter = new Character("", playerClassInput.value, hiddenColorInput.value);
+if (!characterCreationForm || !nameInput || !playerClassInput || !colorPreview || !hiddenColorInput) {
     throw new Error("Couldn't find required elements!");
 }
 export function displayCharacterPreview() {
@@ -26,7 +27,7 @@ function handleCharacterCreation() {
         return;
     }
     updateElementStyle("name-error", "display", "none");
-    previewCharacter = new Character(name, playerClassInput.value, appearanceColorInput.value);
+    previewCharacter = new Character(name, playerClassInput.value, hiddenColorInput.value);
     displayCharacterPreview();
     const selectedSlot = getSelectedSlot();
     if (selectedSlot !== null) {
@@ -44,8 +45,13 @@ characterCreationForm.addEventListener('submit', (event) => {
     event.preventDefault();
     handleCharacterCreation();
 });
-appearanceColorInput.addEventListener('change', (event) => {
-    previewCharacter = new Character(previewCharacter.getName(), previewCharacter.getClassName(), appearanceColorInput.value);
+colorPreview.addEventListener('click', () => {
+    hiddenColorInput.click();
+});
+hiddenColorInput.addEventListener('change', (event) => {
+    const newColor = event.target.value;
+    colorPreview.style.backgroundColor = newColor;
+    previewCharacter = new Character(previewCharacter.getName(), previewCharacter.getClassName(), hiddenColorInput.value);
     updateElementStyle("appearance-color-preview", "backgroundColor", previewCharacter.getColor());
 });
 playerClassInput.addEventListener('change', (event) => {

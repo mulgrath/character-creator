@@ -2,47 +2,52 @@
 <html>
 <head>
     <title>Character Creation</title>
+    <link rel="stylesheet" href="dark-fantasy.css">
 
     <style>
         body {
             display: grid;
             place-items: center;
-            gap: 20px;
+            gap: var(--spacing-lg);
+            padding: var(--spacing-md);
         }
 
-        #character-creation-form{
+        #character-creation-form {
             display: flex;
             flex-direction: column;
-            margin-top: 20px;
-            margin-bottom: 20px;
-            gap: 20px;
-            width: 300px;
+            margin-top: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+            gap: var(--spacing-lg);
+            width: 100%;
+            max-width: 350px;
         }
 
         #character-preview {
-            width: 300px;
+            width: 100%;
+            max-width: 400px;
         }
 
         .color-display {
             width: 60px;
             height: 60px;
-            border: 1px solid black;
+            border: 1px solid var(--border-primary);
         }
 
+        /* Form validation styles stay the same */
         input.valid {
-            border: 2px solid green;
-            background-color: #f0fff0;
+            border-color: #4a7c59 !important;
+            background-color: rgba(74, 124, 89, 0.1) !important;
         }
 
         input.invalid {
-            border: 2px solid red;
-            background-color: #fff0f0;
+            border-color: var(--accent-danger) !important;
+            background-color: rgba(139, 69, 19, 0.1) !important;
         }
 
         .error-message {
-            color: red;
-            font-size: 12px;
-            margin-top: 5px;
+            color: var(--accent-danger);
+            font-size: var(--font-size-small);
+            margin-top: var(--spacing-xs);
             display: none;
         }
 
@@ -52,13 +57,12 @@
 
         .character-slot {
             display: grid;
-            grid-template-columns: 80px 1fr 120px; /* Portrait | Flexible name area | Fixed meta area */
-            grid-template-rows: 1fr 1fr; /* Two rows of equal height */
-            padding: 15px;
-            border: 2px solid #ccc;
+            grid-template-columns: 80px 1fr 120px;
+            grid-template-rows: 1fr 1fr;
             cursor: pointer;
-            min-width: 400px;
-            margin-bottom: 20px;
+            min-width: 300px;
+            max-width: 600px;
+            margin-bottom: var(--spacing-md);
         }
 
         .character-slot.empty {
@@ -70,17 +74,14 @@
 
         .empty-slot-content {
             text-align: center;
-            font-size: 16px;
-            color: #666;
+            font-size: var(--font-size-base);
+            color: var(--text-secondary);
             font-style: italic;
         }
 
-        .character-slot:hover {
-            background-color: #f8f8f8;
-        }
-
+        /* Grid layout components stay the same */
         .character-portrait {
-            grid-row: 1 / 3; /* Span both rows */
+            grid-row: 1 / 3;
             grid-column: 1;
         }
 
@@ -90,7 +91,7 @@
             display: flex;
             flex-direction: column;
             align-items: flex-end;
-            justify-content: space-between; /* Spread date and button vertically */
+            justify-content: space-between;
         }
 
         .character-info {
@@ -99,88 +100,174 @@
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            justify-content: space-between; /* Spread date and button vertically */
-        }
-
-        .delete-button {
-            width: 60px;
-            height: 30px;
-            font-size: 12px;
+            justify-content: space-between;
         }
 
         #character-slots-container {
-            max-height: 440px;
+            max-height: 60vh;
             overflow-y: auto;
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin-bottom: 20px;
+            margin-bottom: var(--spacing-md);
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .custom-color-picker {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .color-preview {
+            width: 20px;
+            height: 20px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .color-preview:hover {
+            border-color: var(--accent-primary);
+            transform: scale(1.05);
+        }
+
+        #stats-table {
+            color: var(--text-primary);
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        #stats-table td { 
+            padding: var(--spacing-sm);
+            border-bottom: 1px solid var(--border-primary);
+        }
+
+        #character-creator-screen {
+            display: flex;
+            gap: var(--spacing-xl);
+        }
+
+        .creator-form-section {
+            flex: 0 0 350px;
+            min-width: 280px;
+        }
+
+        .creator-preview-section {
+            flex: 0 0 450px;
+            min-width: 300px;
+        }
+
+        /* Mobile breakpoint */
+        @media (max-width: 768px) {
+            body {
+                padding: var(--spacing-sm);
+            }
+            
+            #character-creator-screen {
+                flex-direction: column;
+                gap: var(--spacing-md);
+            }
+            
+            .character-slot {
+                grid-template-columns: 60px 1fr 100px;
+                min-width: unset;
+                max-width: unset;
+            }
+            
+            .creator-form-section,
+            .creator-preview-section {
+                min-width: unset;
+                max-width: unset;
+            }
+            
+            #character-slots-container {
+                max-height: 50vh;
+            }
+        }
+
+        /* Large screen optimization */
+        @media (min-width: 1400px) {
+            .character-slot {
+                max-width: 700px;
+            }
+            
+            #character-slots-container {
+                max-width: 1000px;
+            }
         }
     </style>
 </head>
 <body>
     <div id="character-select-screen">
-        <h3>Select Character</h3>
-        <div id="character-slots-container">
+        <h3 class="heading">Select Character</h3>
+        <div id="character-slots-container" class="card">
         </div>
         <div class="action-buttons">
-            <button id="delete-mode-btn">Delete Character</button>
-            <button id="export-mode-btn">Export Character</button>
-            <button id="import-mode-btn">Import Character</button>
+            <button id="delete-mode-btn" class="btn">Delete Character</button>
+            <button id="export-mode-btn" class="btn">Export Character</button>
+            <button id="import-mode-btn" class="btn">Import Character</button>
         </div>
         <div id="mode-instruction" style="display: none;">
             <p id="instruction-text"></p>
-            <button id="mode-back-btn">Back</button>
+            <button id="mode-back-btn" class="btn">Back</button>
         </div>
     </div>
 
     <div id="character-creator-screen" style="display: none;">
-        <div>
-            <h3>Character Creation</h3>
+        <div class="creator-form-section card">
+            <h3 class="heading">Character Creation</h3>
             <form id="character-creation-form">
                 <div>
                     <label>Enter your name:</label>
-                    <input id="character-name" name="character-name" type="text"></input>
+                    <input id="character-name" name="character-name" type="text" class="form-input"></input>
                     <div id="name-error" class="error-message">Name must be 1-14 letters, spaces, or underscores.</div>
                 </div>
                 <div>
                     <label>Choose your class:</label>
-                    <select id="character-class" name="character-class">
-                        <option value="warrior">Warrior</option>
-                        <option value="mage">Mage</option>
-                        <option value="rogue">Rogue</option>
-                    </select>
+                    <div>
+                        <select id="character-class" name="character-class" class="form-input">
+                            <option value="warrior">Warrior</option>
+                            <option value="mage">Mage</option>
+                            <option value="rogue">Rogue</option>
+                        </select>
+                    </div>
                 </div>
                 <div>
                     <label>Appearance Color:</label>
-                    <input id="appearance-color" name="appearance-color" type="color" value="#0000ff">
+                    <div class="custom-color-picker">
+                        <div class="color-preview card" id="color-preview" style="background-color: #0000ff;"></div>
+                        <input id="appearance-color" name="appearance-color" type="color" value="#0000ff" style="display: none;">
+                    </div>
                 </div>
                 <div>
-                    <button type="submit">Create Character</button>
+                    <button type="submit" class="btn btn-primary">Create Character</button>
                 </div>
             </form>
-        </div>
-        <div id="character-preview">
-            <h3>Your Character</h3>
-            <div id="character-info">
-                <p>Class: <span id="preview-class"></span></p>
-                <p><span id="preview-class-description"></span></p>
+            <div style="margin-top: var(--spacing-md);">
+                <button id="character-creator-back-button" class="btn">Back</button>
             </div>
-    
-            <div id="appearance-preview">
-                <p>Appearance:</p>
-                <div class="color-display" id="appearance-color-preview"></div>
-            </div>
-    
-            <table id="stats-table">
-                <tr><td>Constitution:</td><td id="stat-constitution"></td></tr>
-                <tr><td>Strength:</td><td id="stat-strength"></td></tr>
-                <tr><td>Mind:</td><td id="stat-mind"></td></tr>
-                <tr><td>Agility:</td><td id="stat-agility"></td></tr>
-                <tr><td>Defense:</td><td id="stat-defense"></td></tr>
-            </table>
         </div>
-        <div>
-            <button id="character-creator-back-button">Back</button>
+        <div class="creator-preview-section">
+            <div id="character-preview" class="card">
+                <h3>Your Character</h3>
+                <div id="character-info">
+                    <h4 class="section-header">Class: <span id="preview-class"></span></h4>
+                    <p><span id="preview-class-description"></span></p>
+                </div>
+        
+                <h4 class="section-header">Attributes:</h4>
+                <table id="stats-table">
+                    <tr><td>Constitution:</td><td id="stat-constitution"></td></tr>
+                    <tr><td>Strength:</td><td id="stat-strength"></td></tr>
+                    <tr><td>Mind:</td><td id="stat-mind"></td></tr>
+                    <tr><td>Agility:</td><td id="stat-agility"></td></tr>
+                    <tr><td>Defense:</td><td id="stat-defense"></td></tr>
+                </table>
+
+                <div id="appearance-preview">
+                    <h4 style="margin-bottom: 0; margin-top:20px;">Appearance:</h4>
+                    <div class="color-display" id="appearance-color-preview"></div>
+                </div>
+            </div>
         </div>
     </div>
 

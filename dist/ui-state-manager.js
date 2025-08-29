@@ -13,7 +13,7 @@ export function switchToMode(newState) {
     switch (newState) {
         case AppState.CharacterCreator:
             currentState = AppState.CharacterCreator;
-            updateElementStyle("character-creator-screen", "display", "block");
+            updateElementStyle("character-creator-screen", "display", "flex");
             updateElementStyle("character-select-screen", "display", "none");
             break;
         case AppState.CharacterSelect:
