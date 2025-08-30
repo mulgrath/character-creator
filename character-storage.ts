@@ -6,7 +6,8 @@ export function saveCharacterToLocalStorage(character: Character, slotIndex: num
     const saveData = {
         name: character.getName(),
         className: character.getClassName().toLowerCase(),
-        color: character.getColor()
+        color: character.getColor(),
+        creationDate: character.getCreationDate().toISOString(),
     };
     localStorage.setItem(`character_${slotIndex}`, JSON.stringify(saveData));
 }
@@ -16,7 +17,8 @@ export function loadCharacterFromLocalStorage(slotIndex: number): Character | nu
     if (!saveData) return null;
 
     const data = JSON.parse(saveData);
-    return new Character(data.name, data.className, data.color);
+    const creationDate = data.creationDate ? new Date(data.creationDate): new Date();
+    return new Character(data.name, data.className, data.color, creationDate);
 }
 
 export function exportCharacterToJSON(character: Character): string {
@@ -24,6 +26,7 @@ export function exportCharacterToJSON(character: Character): string {
         name: character.getName(),
         className: character.getClassName().toLowerCase(),
         color: character.getColor(),
+        creationDate: character.getCreationDate().toISOString(),
         exportDate: new Date().toISOString()
     };
     return JSON.stringify(exportData, null, 2);
@@ -32,7 +35,7 @@ export function exportCharacterToJSON(character: Character): string {
 export function importCharacterFromJSON(jsonString: string): Character | null {
     try {
         const characterData = JSON.parse(jsonString);
-        return new Character(characterData.name, characterData.className, characterData.color);
+        return new Character(characterData.name, characterData.className, characterData.color, characterData.creationDate);
     } catch (error) {
         return null;
     }

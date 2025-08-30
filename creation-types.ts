@@ -30,13 +30,15 @@ export class Character {
     private attributes: CharacterAttributes;
     private color: string = 'blue';
     private classType: CharacterClassType;
+    private creationDate: Date;
 
-    constructor (private name: string, className: string, color?: string) {
+    constructor (private name: string, className: string, color?: string, creationDate?: Date) {
         this.classType = this.getClassTypeFromString(className);
         this.attributes = CLASS_DEFINITIONS[this.classType];
         if (color) {
             this.color = color;
         }
+        this.creationDate = creationDate || new Date();
     }
 
     public getName() {
@@ -61,6 +63,14 @@ export class Character {
 
     public getClassDescription(): string {
         return CLASS_DESCRIPTIONS[this.classType];
+    }
+
+    public getCreationDate(): Date {
+        return new Date(this.creationDate);
+    }
+
+    public getFormattedCreationDate(): string {
+        return new Date(this.creationDate).toDateString();
     }
 
     private getClassTypeFromString(name: string): CharacterClassType {

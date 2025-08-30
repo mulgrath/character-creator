@@ -43,7 +43,7 @@ function createFilledSlotHTML(character) {
             <div class="character-class">${character.getClassName()}</div>
         </div>
         <div class="character-meta">
-            <div class="creation-date">${new Date().toDateString()}</div>
+            <div class="creation-date">${character.getFormattedCreationDate()}</div>
         </div>
     `;
 }

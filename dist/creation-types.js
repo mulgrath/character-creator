@@ -24,7 +24,7 @@ const CLASS_DESCRIPTIONS = {
     [CharacterClassType.Rogue]: "The nimble Rogue excels in avoiding attacks and striking faster than foes can respond."
 };
 export class Character {
-    constructor(name, className, color) {
+    constructor(name, className, color, creationDate) {
         this.name = name;
         this.color = 'blue';
         this.classType = this.getClassTypeFromString(className);
@@ -32,6 +32,7 @@ export class Character {
         if (color) {
             this.color = color;
         }
+        this.creationDate = creationDate || new Date();
     }
     getName() {
         return this.name;
@@ -50,6 +51,12 @@ export class Character {
     }
     getClassDescription() {
         return CLASS_DESCRIPTIONS[this.classType];
+    }
+    getCreationDate() {
+        return new Date(this.creationDate);
+    }
+    getFormattedCreationDate() {
+        return new Date(this.creationDate).toDateString();
     }
     getClassTypeFromString(name) {
         switch (name.toLowerCase()) {
