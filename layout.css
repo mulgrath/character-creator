@@ -1,0 +1,240 @@
+/* =================================
+   LAYOUT FOUNDATION
+   ================================= */
+
+/* Main page container - centers content and provides consistent spacing */
+body {
+    display: grid;
+    place-items: center;
+    gap: var(--spacing-lg);
+    padding: var(--spacing-md);
+}
+
+/* =================================
+   CHARACTER CREATOR LAYOUT
+   ================================= */
+
+/* Two-column layout: form section on left, preview section on right */
+#character-creator-screen {
+    display: flex;
+    gap: var(--spacing-xl);
+}
+
+/* Form section - fixed width to maintain readability */
+.creator-form-section {
+    flex: 0 0 350px; /* Don't grow/shrink, preferred 350px width */
+    min-width: 280px;
+}
+
+/* Preview section - slightly wider to accommodate character display */
+.creator-preview-section {
+    flex: 0 0 450px; /* Don't grow/shrink, preferred 450px width */
+    min-width: 300px;
+}
+
+/* Form container - vertical stack with consistent spacing */
+#character-creation-form {
+    display: flex;
+    flex-direction: column;
+    margin-top: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+    gap: var(--spacing-lg);
+    width: 100%;
+    max-width: 350px;
+}
+
+/* Character preview panel sizing */
+#character-preview {
+    width: 100%;
+    max-width: 400px;
+}
+
+/* =================================
+   CHARACTER SLOT COMPONENTS
+   ================================= */
+
+/* Main slot container with scrollable character list */
+#character-slots-container {
+    max-height: 60vh; /* Responsive height based on viewport */
+    overflow-y: auto;
+    margin-bottom: var(--spacing-md);
+    width: 100%;
+    max-width: 800px;
+}
+
+/* Individual character slot - three-column grid layout */
+.character-slot {
+    display: grid;
+    grid-template-columns: 80px 1fr 120px; /* Portrait | Name/Class | Meta/Actions */
+    grid-template-rows: 1fr 1fr; /* Two equal height rows */
+    cursor: pointer;
+    min-width: 300px;
+    max-width: 600px;
+    margin-bottom: var(--spacing-md);
+}
+
+/* Empty slot styling - centers "Create New Character" text */
+.character-slot.empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 62px;
+}
+
+.empty-slot-content {
+    text-align: center;
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+/* Grid positioning for slot content elements */
+.character-portrait {
+    grid-row: 1 / 3; /* Spans both rows */
+    grid-column: 1;
+}
+
+.character-info {
+    grid-row: 1 / 3; /* Spans both rows */
+    grid-column: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.character-meta {
+    grid-row: 1 / 3; /* Spans both rows */
+    grid-column: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: space-between;
+}
+
+/* =================================
+   FORM ELEMENTS & COMPONENTS
+   ================================= */
+
+/* Color picker display square */
+.color-display {
+    width: 60px;
+    height: 60px;
+    border: 1px solid var(--border-primary);
+}
+
+/* Custom color picker component */
+.custom-color-picker {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.color-preview {
+    width: 20px;
+    height: 20px;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.color-preview:hover {
+    border-color: var(--accent-primary);
+    transform: scale(1.05);
+}
+
+/* Form validation states - override theme defaults with !important */
+input.valid {
+    border-color: #4a7c59 !important;
+    background-color: rgba(74, 124, 89, 0.1) !important;
+}
+
+input.invalid {
+    border-color: var(--accent-danger) !important;
+    background-color: rgba(139, 69, 19, 0.1) !important;
+}
+
+.error-message {
+    color: var(--accent-danger);
+    font-size: var(--font-size-small);
+    margin-top: var(--spacing-xs);
+    display: none; /* Hidden by default, shown via JavaScript */
+}
+
+.form-group {
+    border: none;
+    padding: 0;
+    margin-bottom: var(--spacing-lg);
+}
+
+.form-actions {
+    margin-top: var(--spacing-md);
+}
+
+/* =================================
+   CHARACTER PREVIEW COMPONENTS
+   ================================= */
+
+/* Class description styling */
+#preview-class-description {
+    font-style: italic;
+}
+
+/* Stats table styling */
+#stats-table {
+    color: var(--text-primary);
+    border-collapse: collapse;
+    width: 100%;
+}
+
+#stats-table td { 
+    padding: var(--spacing-sm);
+    border-bottom: 1px solid var(--border-primary);
+}
+
+/* =================================
+   RESPONSIVE BREAKPOINTS
+   ================================= */
+
+/* Mobile devices - stack columns vertically and adjust sizing */
+@media (max-width: 768px) {
+    body {
+        padding: var(--spacing-sm);
+    }
+    
+    /* Stack creator sections vertically on mobile */
+    #character-creator-screen {
+        flex-direction: column;
+        gap: var(--spacing-md);
+    }
+    
+    /* Adjust character slot grid for narrow screens */
+    .character-slot {
+        grid-template-columns: 60px 1fr 100px; /* Smaller portrait and meta columns */
+        min-width: unset;
+        max-width: unset;
+    }
+    
+    /* Remove fixed widths on mobile for better flexibility */
+    .creator-form-section,
+    .creator-preview-section {
+        min-width: unset;
+        max-width: unset;
+    }
+    
+    /* Reduce slot container height on mobile */
+    #character-slots-container {
+        max-height: 50vh;
+    }
+}
+
+/* Large screens - prevent elements from becoming too wide */
+@media (min-width: 1400px) {
+    .character-slot {
+        max-width: 700px;
+    }
+    
+    #character-slots-container {
+        max-width: 1000px;
+    }
+}

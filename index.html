@@ -3,248 +3,66 @@
 <head>
     <title>Character Creation</title>
     <link rel="stylesheet" href="dark-fantasy.css">
-
-    <style>
-        body {
-            display: grid;
-            place-items: center;
-            gap: var(--spacing-lg);
-            padding: var(--spacing-md);
-        }
-
-        #character-creation-form {
-            display: flex;
-            flex-direction: column;
-            margin-top: var(--spacing-lg);
-            margin-bottom: var(--spacing-lg);
-            gap: var(--spacing-lg);
-            width: 100%;
-            max-width: 350px;
-        }
-
-        #character-preview {
-            width: 100%;
-            max-width: 400px;
-        }
-
-        .color-display {
-            width: 60px;
-            height: 60px;
-            border: 1px solid var(--border-primary);
-        }
-
-        /* Form validation styles stay the same */
-        input.valid {
-            border-color: #4a7c59 !important;
-            background-color: rgba(74, 124, 89, 0.1) !important;
-        }
-
-        input.invalid {
-            border-color: var(--accent-danger) !important;
-            background-color: rgba(139, 69, 19, 0.1) !important;
-        }
-
-        .error-message {
-            color: var(--accent-danger);
-            font-size: var(--font-size-small);
-            margin-top: var(--spacing-xs);
-            display: none;
-        }
-
-        #preview-class-description {
-            font-style: italic;
-        }
-
-        .character-slot {
-            display: grid;
-            grid-template-columns: 80px 1fr 120px;
-            grid-template-rows: 1fr 1fr;
-            cursor: pointer;
-            min-width: 300px;
-            max-width: 600px;
-            margin-bottom: var(--spacing-md);
-        }
-
-        .character-slot.empty {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 62px;
-        }
-
-        .empty-slot-content {
-            text-align: center;
-            font-size: var(--font-size-base);
-            color: var(--text-secondary);
-            font-style: italic;
-        }
-
-        /* Grid layout components stay the same */
-        .character-portrait {
-            grid-row: 1 / 3;
-            grid-column: 1;
-        }
-
-        .character-meta {
-            grid-row: 1 / 3;
-            grid-column: 3;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            justify-content: space-between;
-        }
-
-        .character-info {
-            grid-row: 1 / 3;
-            grid-column: 2;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            justify-content: space-between;
-        }
-
-        #character-slots-container {
-            max-height: 60vh;
-            overflow-y: auto;
-            margin-bottom: var(--spacing-md);
-            width: 100%;
-            max-width: 800px;
-        }
-
-        .custom-color-picker {
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-sm);
-        }
-
-        .color-preview {
-            width: 20px;
-            height: 20px;
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .color-preview:hover {
-            border-color: var(--accent-primary);
-            transform: scale(1.05);
-        }
-
-        #stats-table {
-            color: var(--text-primary);
-            border-collapse: collapse;
-            width: 100%;
-        }
-
-        #stats-table td { 
-            padding: var(--spacing-sm);
-            border-bottom: 1px solid var(--border-primary);
-        }
-
-        #character-creator-screen {
-            display: flex;
-            gap: var(--spacing-xl);
-        }
-
-        .creator-form-section {
-            flex: 0 0 350px;
-            min-width: 280px;
-        }
-
-        .creator-preview-section {
-            flex: 0 0 450px;
-            min-width: 300px;
-        }
-
-        /* Mobile breakpoint */
-        @media (max-width: 768px) {
-            body {
-                padding: var(--spacing-sm);
-            }
-            
-            #character-creator-screen {
-                flex-direction: column;
-                gap: var(--spacing-md);
-            }
-            
-            .character-slot {
-                grid-template-columns: 60px 1fr 100px;
-                min-width: unset;
-                max-width: unset;
-            }
-            
-            .creator-form-section,
-            .creator-preview-section {
-                min-width: unset;
-                max-width: unset;
-            }
-            
-            #character-slots-container {
-                max-height: 50vh;
-            }
-        }
-
-        /* Large screen optimization */
-        @media (min-width: 1400px) {
-            .character-slot {
-                max-width: 700px;
-            }
-            
-            #character-slots-container {
-                max-width: 1000px;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="layout.css">
 </head>
 <body>
-    <div id="character-select-screen">
-        <h3 class="heading">Select Character</h3>
-        <div id="character-slots-container" class="card">
-        </div>
-        <div class="action-buttons">
+    <main id="character-select-screen">
+        <header>
+            <h3 class="heading">Select Character</h3>
+        </header>
+
+        <section id="character-slots-container" class="card" role="list">
+            <!-- Character slots dynamically generated here -->
+        </section>
+
+        <nav class="action-buttons" aria-label="Character management actions">
             <button id="delete-mode-btn" class="btn">Delete Character</button>
             <button id="export-mode-btn" class="btn">Export Character</button>
             <button id="import-mode-btn" class="btn">Import Character</button>
-        </div>
-        <div id="mode-instruction" style="display: none;">
+        </nav>
+
+        <aside id="mode-instruction" style="display: none;" aria-live="polite">
             <p id="instruction-text"></p>
             <button id="mode-back-btn" class="btn">Back</button>
-        </div>
-    </div>
+        </aside>
+    </main>
 
-    <div id="character-creator-screen" style="display: none;">
+    <section id="character-creator-screen" style="display: none;">
         <div class="creator-form-section card">
-            <h3 class="heading">Character Creation</h3>
+            <header>
+                <h3 class="heading">Character Creation</h3>
+            </header>
+
             <form id="character-creation-form">
-                <div>
-                    <label>Enter your name:</label>
+                <fieldset class="form-group">
+                    <label for="character-name">Enter your name:</label>
                     <input id="character-name" name="character-name" type="text" class="form-input"></input>
                     <div id="name-error" class="error-message">Name must be 1-14 letters, spaces, or underscores.</div>
-                </div>
-                <div>
-                    <label>Choose your class:</label>
-                    <div>
-                        <select id="character-class" name="character-class" class="form-input">
-                            <option value="warrior">Warrior</option>
-                            <option value="mage">Mage</option>
-                            <option value="rogue">Rogue</option>
-                        </select>
-                    </div>
-                </div>
-                <div>
+                </fieldset>
+
+                <fieldset class="form-group">
+                    <label for="character-class">Choose your class:</label>
+                    <select id="character-class" name="character-class" class="form-input">
+                        <option value="warrior">Warrior</option>
+                        <option value="mage">Mage</option>
+                        <option value="rogue">Rogue</option>
+                    </select>
+                </fieldset>
+
+                <fieldset class="form-group">
                     <label>Appearance Color:</label>
                     <div class="custom-color-picker">
                         <div class="color-preview card" id="color-preview" style="background-color: #0000ff;"></div>
                         <input id="appearance-color" name="appearance-color" type="color" value="#0000ff" style="display: none;">
                     </div>
-                </div>
-                <div>
-                    <button type="submit" class="btn btn-primary">Create Character</button>
-                </div>
+                </fieldset>
+
+                <button type="submit" class="btn btn-primary">Create Character</button>
             </form>
-            <div style="margin-top: var(--spacing-md);">
+
+            <footer class="form-actions">
                 <button id="character-creator-back-button" class="btn">Back</button>
-            </div>
+            </footer>
         </div>
         <div class="creator-preview-section">
             <div id="character-preview" class="card">
@@ -269,7 +87,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 
     <script type="module" src="dist/main.js"></script>
 </body>
